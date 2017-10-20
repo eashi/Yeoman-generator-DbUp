@@ -1,12 +1,10 @@
 {
   "name": "generator-dbup",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "C# Console project to run DbUp migration scripts.",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "DbUp Team",
+  "keywords": ["yeoman-generator", "dbup"],
+  "author": "Emad Alashi",
   "license": "MIT",
   "dependencies": {
     "mkdirp": "^0.5.1",

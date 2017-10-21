@@ -5,6 +5,7 @@
   "main": "index.js",
   "keywords": ["yeoman-generator", "dbup"],
   "author": "Emad Alashi",
+  "repository": "eashi/Yeoman-generator-DbUp",
   "license": "MIT",
   "dependencies": {
     "mkdirp": "^0.5.1",

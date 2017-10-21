@@ -17,3 +17,10 @@ yo dbup --databasename YourDatabaseName --projectname TheDesiredNameForConsolePo
 ```
 
 If you don't supply these two options the generator will prompt you for them.
+
+## Using The Generated DbUp Project
+
+Once you have generated the project and built it, you can run the migrations by executing exe resulted from the compilation. The exe takes three parameters:
+- "connectionstring" alias (c): It takes the name of the connectionstring setting in the config, or the connection string itself.
+- "whatif" alias (w): set this parameter to true if you want to see the scripts that are about to be run without running them.
+- "logtoconsole" alias (l): the default value is `true`, logs to the console while running the application.

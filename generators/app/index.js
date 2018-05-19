@@ -57,6 +57,10 @@ module.exports = class extends Generator {
     }
 
     writing(){
+
+        mkdirp(this.destinationPath(this.projectname));
+        this.destinationRoot(this.destinationPath(this.projectname));
+
         this.fs.copyTpl(
             this.templatePath('Project.csproj'),
             this.destinationPath(this.projectname + ".csproj"),

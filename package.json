@@ -1,6 +1,6 @@
 {
   "name": "generator-dbup",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "C# Console project to run DbUp migration scripts.",
   "main": "index.js",
   "keywords": [

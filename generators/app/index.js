@@ -67,6 +67,21 @@ module.exports = class extends Generator {
             { projectname: this.projectname}
         );
         this.fs.copyTpl(
+            this.templatePath('OrderedScriptPrvider.cs'),
+            this.destinationPath('OrderedScriptPrvider.cs'),
+            { projectname: this.projectname}
+        );
+        this.fs.copyTpl(
+            this.templatePath('SelectiveJournal.cs'),
+            this.destinationPath('SelectiveJournal.cs'),
+            { projectname: this.projectname}
+        );
+        this.fs.copyTpl(
+            this.templatePath('SelectiveScriptHelper.cs'),
+            this.destinationPath('SelectiveScriptHelper.cs'),
+            { projectname: this.projectname}
+        );
+        this.fs.copyTpl(
             this.templatePath("Program.cs"),
             this.destinationPath("Program.cs"),
             { projectname: this.projectname}
@@ -81,11 +96,16 @@ module.exports = class extends Generator {
             this.destinationPath("Options.cs"),
             { projectname: this.projectname}
         );
+        this.fs.copyTpl(
+            this.templatePath("Properties/AssemblyInfo.cs"),
+            this.destinationPath("Properties/AssemblyInfo.cs"),
+            { projectname: this.projectname}
+        );
         this.fs.copy(
             this.templatePath("packages.config"),
             this.destinationPath("packages.config")
         );
-        mkdirp(this.destinationPath("MigrationScripts"));
-        mkdirp(this.destinationPath("NonMigrationScripts"));
+        mkdirp(this.destinationPath("Scripts/MigrationScripts"));
+        mkdirp(this.destinationPath("Scripts/NonMigrationScripts"));
     }
 };

@@ -50,8 +50,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Options.cs" />
+    <Compile Include="OrderedScriptPrvider.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SelectiveJournal.cs" />
+    <Compile Include="SelectiveScriptHelper.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />

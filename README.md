@@ -24,3 +24,4 @@ Once you have generated the project and built it, you can run the migrations by 
 - "connectionstring" alias (c): It takes the name of the connectionstring setting in the config, or the connection string itself.
 - "whatif" alias (w): set this parameter to true if you want to see the scripts that are about to be run without running them.
 - "logtoconsole" alias (l): the default value is `true`, logs to the console while running the application.
+- "timeout" alias (t): the timeout in seconds that the scripts are allowed to run before aborting.

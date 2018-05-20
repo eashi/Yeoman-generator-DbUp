@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Diagnostics;
 using System.Reflection;
+using DbUp.ScriptProviders;
 
 namespace <%= projectname %>
 {
@@ -27,7 +28,7 @@ namespace <%= projectname %>
             int exitCode;
             try
             {
-                var result = RunDatabaseScripts(options.ConnectionStringName, options.LogToConsole, options.WhatIf);
+                var result = RunDatabaseScripts(options.ConnectionStringName, options.LogToConsole, options.WhatIf, TimeSpan.FromSeconds(options.TimeoutInSeconds));
                 if (result.Successful)
                 {
                     Console.ForegroundColor = ConsoleColor.Green;
@@ -58,61 +59,26 @@ namespace <%= projectname %>
             return exitCode;
         }
 
-        private static DatabaseUpgradeResult RunDatabaseScripts(string targetDatabase, bool logToConsole = true, bool whatif = false)
+        private static DatabaseUpgradeResult RunDatabaseScripts(string targetDatabase, bool logToConsole = true, bool whatif = false, TimeSpan? timeout = null)
         {
-            var connectionString = ConfigurationManager.ConnectionStrings[targetDatabase] != null ? ConfigurationManager.ConnectionStrings[targetDatabase].ConnectionString : targetDatabase;
+            var connectionString = ConfigurationManager.ConnectionStrings[targetDatabase]?.ConnectionString ?? targetDatabase;
 
-            return Upgrade(connectionString, logToConsole, whatif);
+            return Upgrade(connectionString, logToConsole, whatif, timeout);
         }
 
-        public static DatabaseUpgradeResult Upgrade(string connectionString, bool logToConsole, bool whatif)
+        public static DatabaseUpgradeResult Upgrade(string connectionString, bool logToConsole, bool whatif, TimeSpan? timeout)
         {
-            var schemaUpgradeResult = RunMigrationScripts(connectionString, logToConsole, whatif);
-
-            if (!schemaUpgradeResult.Successful)
-                return schemaUpgradeResult;
-
-            return RunNonMigratingScripts(connectionString, logToConsole, whatif);
-        }
-
-        public static DatabaseUpgradeResult RunMigrationScripts(string connectionString, bool logToConsole, bool whatif)
-        {
-            Console.WriteLine("=== Executing migrating scripts ===");
-           return BuildAndRunUpgrader( 
-               connectionString, 
-               logToConsole, 
-               whatif, 
-               builder =>
-               {
-                   return builder
-                   .WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), name => name.StartsWith("<%= projectname %>.Scripts.MigrationScripts"));
-               }
-               );
-
-        }
-
-        public static DatabaseUpgradeResult RunNonMigratingScripts(string connectionString, bool logToConsole, bool whatif)
-        {
-            Console.WriteLine("=== Executing Non-migrating scripts ===");
-            return BuildAndRunUpgrader(
-               connectionString,
-               logToConsole,
-               whatif,
-               builder =>
-               {
-                   return builder.WithScriptsEmbeddedInAssembly(Assembly.GetExecutingAssembly(), name => name.StartsWith("<%= projectname %>.Scripts.NonMigrationScripts"))
-                   .JournalTo(new NullJournal());
-               });
-        }
-
-        public static DatabaseUpgradeResult BuildAndRunUpgrader(string connectionString, bool logToConsole, bool whatif, Func<UpgradeEngineBuilder, UpgradeEngineBuilder> buildWithScriptsFilter)
-        {
+            EnsureDatabase.For.SqlDatabase(connectionString);
             var deployer =
                 DeployChanges.To
                     .SqlDatabase(connectionString)
-                    .WithTransaction();
-
-            deployer = buildWithScriptsFilter(deployer);
+                    .WithTransaction()
+                    .WithExecutionTimeout(timeout)
+                    .WithScripts(
+                        new OrderedScriptPrvider(
+                            new EmbeddedScriptProvider(Assembly.GetExecutingAssembly(), SelectiveScriptHelper.IsApplicable),
+                            SelectiveScriptHelper.Comparer))
+                    .JournalToSqlTableJournalSelective("dbo", "SchemaVersions", SelectiveScriptHelper.IsMigration);
 
             deployer = logToConsole ? deployer.LogToConsole() : deployer.LogToTrace();
 
@@ -132,8 +98,8 @@ namespace <%= projectname %>
                     return new DatabaseUpgradeResult(new List<SqlScript>(), false, ex);
                 }
             }
-            else
-                return upgrader.PerformUpgrade();
+
+            return upgrader.PerformUpgrade();
         }
     }
 

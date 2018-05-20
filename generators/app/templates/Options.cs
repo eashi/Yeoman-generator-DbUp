@@ -12,5 +12,8 @@ namespace <%= projectname %>
 
         [Option(shortName:'l', longName:"logtoconsole", DefaultValue = true, HelpText = "if set the result is output on the console")]
         public bool LogToConsole { get; set; }
+
+        [Option(shortName: 't', longName: "timeout", DefaultValue = 1000, HelpText = "script execution timeout in seconds")]
+        public int TimeoutInSeconds { get; set; }
     }
 }

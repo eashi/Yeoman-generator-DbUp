@@ -21,7 +21,7 @@ namespace <%= projectname %>
             {
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine("Invalid parameters");
-
+                return -1;
             }
 
             int exitCode;

@@ -1,9 +1,12 @@
 {
   "name": "generator-dbup",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "description": "C# Console project to run DbUp migration scripts.",
   "main": "index.js",
-  "keywords": ["yeoman-generator", "dbup"],
+  "keywords": [
+    "yeoman-generator",
+    "dbup"
+  ],
   "author": "Emad Alashi",
   "repository": "eashi/Yeoman-generator-DbUp",
   "license": "MIT",
